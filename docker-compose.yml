@@ -1,0 +1,81 @@
+version: '2'
+services:
+  plex:
+    image: linuxserver/plex
+    container_name: plex
+    volumes:
+      - /media/Movies:/data/movies
+      - /media/Series:/data/series
+      - /media/PlexConfig:/config
+      - /media/PlexTranscode:/data/transcode
+    devices:
+      - /dev/dri:/dev/dri
+    restart: unless-stopped
+    environment:
+      - VERSION=latest
+      - TZ=Americas/Los_angeles
+      - PUID=1000
+      - PGID=1000
+    network_mode: host
+  nzbget:
+    image: linuxserver/nzbget
+    container_name: nzbget
+    volumes:
+      - /media/Movies:/data/movies
+      - /media/Series:/data/series
+      - /media/NzbgetDownloads:/downloads
+      - /media/NzbgetConfig:/config
+    restart: unless-stopped
+    environment:
+      - TZ=Americas/Los_Angeles
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 6789:6789
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    depends_on:
+      - nzbget
+    volumes:
+      - /media/Movies:/data/movies
+      - /media/Series:/data/series
+      - /media/SonarrConfig:/config
+    restart: unless-stopped
+    environment:
+      - TZ=Americas/Los_Angeles
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 8989:8989
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    depends_on:
+      - nzbget
+    volumes:
+      - /media/Movies:/data/movies
+      - /media/Series:/data/series
+      - /media/RadarrConfig:/config
+    restart: unless-stopped
+    environment:
+      - TZ=Americas/Los_Angeles
+      - PUID=1000
+      - PGID=1000
+    ports:
+      - 7878:7878
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    volumes:
+      - /media/PortainerData:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    ports:
+      - 9000:9000
+  watchtower:
+    image: v2tec/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
