@@ -4,10 +4,10 @@ services:
     image: linuxserver/plex
     container_name: plex
     volumes:
-      - /media/Movies:/data/movies
-      - /media/Series:/data/series
-      - /media/PlexConfig:/config
-      - /media/PlexTranscode:/data/transcode
+      - /mnt/media/Movies:/data/movies
+      - /mnt/media/Series:/data/series
+      - /mnt/media/PlexConfig:/config
+      - /mnt/media/PlexTranscode:/data/transcode
     devices:
       - /dev/dri:/dev/dri
     restart: unless-stopped
@@ -21,10 +21,10 @@ services:
     image: linuxserver/nzbget
     container_name: nzbget
     volumes:
-      - /media/Movies:/data/movies
-      - /media/Series:/data/series
-      - /media/NzbgetDownloads:/downloads
-      - /media/NzbgetConfig:/config
+      - /mnt/media/Movies:/data/movies
+      - /mnt/media/Series:/data/series
+      - /mnt/media/NzbgetDownloads:/downloads
+      - /mnt/media/NzbgetConfig:/config
     restart: unless-stopped
     environment:
       - TZ=Americas/Los_Angeles
@@ -38,9 +38,9 @@ services:
     depends_on:
       - nzbget
     volumes:
-      - /media/Movies:/data/movies
-      - /media/Series:/data/series
-      - /media/SonarrConfig:/config
+      - /mnt/media/Movies:/data/movies
+      - /mnt/media/Series:/data/series
+      - /mnt/media/SonarrConfig:/config
     restart: unless-stopped
     environment:
       - TZ=Americas/Los_Angeles
@@ -54,9 +54,9 @@ services:
     depends_on:
       - nzbget
     volumes:
-      - /media/Movies:/data/movies
-      - /media/Series:/data/series
-      - /media/RadarrConfig:/config
+      - /mnt/media/Movies:/data/movies
+      - /mnt/media/Series:/data/series
+      - /mnt/media/RadarrConfig:/config
     restart: unless-stopped
     environment:
       - TZ=Americas/Los_Angeles
@@ -68,7 +68,7 @@ services:
     image: portainer/portainer
     container_name: portainer
     volumes:
-      - /media/PortainerData:/data
+      - /mnt/media/PortainerData:/data
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
     ports:
